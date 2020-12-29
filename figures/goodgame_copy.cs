@@ -25,7 +25,7 @@ public class TheWindow : Window
     int penRow = 3;
     int penCol = 1; // add sample pen  
 
-    // slider (min, max, freq)           LR, MoM,  Drop,  Time,  Sample, State, Number, Start,   End, Row,  Col
+    // slider (min, max, freq)       LR, MoM,  Drop, Time, Sample, State, Number, Start,   End, Row,  Col
     readonly double[] sliderMin = { 0.0, 0.0, 0.0, 0.000, 1, 0, 0, 1, 1, 1, 1 };
     readonly double[] sliderMax = { 0.02, 1.0, 1.0, 10.0, 5000.0, 2, 10, 60000, 60000, 7, 7 };
     readonly double[] sliderFreq = { 0.0001, 0.01, 0.01, 0.001, 1.0, 1, 1, 1, 1, 1, 1 };
@@ -41,7 +41,7 @@ public class TheWindow : Window
                     gapMenuSum = 0;
     double gapMenuExtra = 20, tile = 30;
 
-    // efficiency       
+    // efficiency
     float inputThreshold = 0.35f; // visual mnist threshold        
     float weightThreshold = 0.06f; // input to hidden or input to output
 
@@ -212,7 +212,7 @@ public class TheWindow : Window
     {
         NeuralNetworkSave(path + pathName);
     }
-    
+
     // EVENT 
     void Window_SizeChanged(object sender, SizeChangedEventArgs e)
     {
@@ -309,8 +309,6 @@ public class TheWindow : Window
             if (cx < 0 || cx >= 10 || cy < 0 || cy >= 1) return;
             if (isLeftClicked)
             {
-                //  if((int)cx < 0 || (int)cx > 9) { ConsoleExec("failed " + ((int)cx).ToString() + "\n"); return; }
-
                 for (int i = 0, store = (int)cx * 784; i < 784; i++, store++)
                     neuron[i] = inputStorage[store];
                 ConsoleExec("Load Data " + ((int)cx).ToString() + "\n");
@@ -380,8 +378,8 @@ public class TheWindow : Window
     void CopyNode(int pos, int neuronLayer, int tarPos, int x, int iCurrent)
     {
         // 1. save weights
-        float[] weightBack = weight.ToArray(), deltaBack = delta.ToArray(); 
-       
+        float[] weightBack = weight.ToArray(), deltaBack = delta.ToArray();
+
         // 2. save weights of the target neuron
         float[] targetWeights = new float[u[neuronLayer + 0] + u[neuronLayer + 2]];
         float[] targetDeltas = new float[u[neuronLayer + 0] + u[neuronLayer + 2]];
@@ -398,7 +396,7 @@ public class TheWindow : Window
 
         // 4. save postion of ingoing and outgoing weights of this neuron
         bool[] growed = new bool[weightLen];
-        for (int i = 0, j = input, t = 0, w = 0; i < layer; i++, t += u[i - 1], w += u[i] * u[i - 1]) 
+        for (int i = 0, j = input, t = 0, w = 0; i < layer; i++, t += u[i - 1], w += u[i] * u[i - 1])
             for (int k = 0, ke = u[i + 1]; k < ke; k++, j++)
                 for (int n = t, ne = t + u[i], m = w + k; n < ne; n++, m += ke)
                     if (pos == j || pos == n) growed[m] = true;
@@ -415,8 +413,8 @@ public class TheWindow : Window
                 }
                 else // copy weights into new node
                 {
-                    delta[m] = targetDeltas[c]; 
-                    weight[m] = targetWeights[c++]; 
+                    delta[m] = targetDeltas[c];
+                    weight[m] = targetWeights[c++];
                 }
         }
     } // CopyNode end
@@ -529,7 +527,7 @@ public class TheWindow : Window
         isReady = abort = false;
         DateTime elapsed = DateTime.Now, desired = DateTime.Now.AddMilliseconds(180);
 
-        if (training) for (int i = 0; i < weightLen; i++) delta[i] *= momentum;       
+        if (training) for (int i = 0; i < weightLen; i++) delta[i] *= momentum;
         if (training) NetworkBackup(); // backstep function
 
         // get training or test files with images and its labels
@@ -578,7 +576,7 @@ public class TheWindow : Window
                     + "   acc = " + (correct * 100.0 / all).ToString("F2") + "%\n");
 
                 DrawNeuralNetwork(target, prediction, true);  // draw neural network and refresh visuals    
-                
+
                 WaitMilliseconds(timeInterval);   // delay for userinteraction
 
                 GetCurrentSample(); // store visual sample
@@ -686,7 +684,7 @@ public class TheWindow : Window
             for (int k = 0, right = u[i + 1], left = t + u[i]; k < right; k++, j++) // neuron
             {
                 if (isTraining && i != layer - 1 && dropout > 0 && FastRand() / 32767.0 < dropout) // accelerated dropout
-                    { neuron[j] = -1; continue; } // -1 for a dropout neuron, thx to relu ^^
+                { neuron[j] = -1; continue; } // -1 for a dropout neuron, thx to relu ^^
 
                 float net = 0, nj;
                 for (int n = t, m = w + k; n < left; n++, m += right) // weight
@@ -1400,12 +1398,10 @@ class Erratic
     {
         double x = Math.Sin(this.seed) * 1000;
         double result = x - Math.Floor(x);  // [0.0,1.0)
-        this.seed = (float)result;  // for next call
-        return (float)result;
+        return this.seed = (float)result;
     }
     public float nextFloat(float lo, float hi)
     {
-        float x = this.next();
-        return (hi - lo) * x + lo;
+        return (hi - lo) * this.next() + lo;
     }
 };
